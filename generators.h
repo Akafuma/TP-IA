@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-CSP * generate_pigeons(int n);
+void generate_pigeons(int n, CSP * csp);
 
-CSP * generate_dames(int n);
+void generate_dames(int n, CSP * csp);
 
 void free_CSP(CSP * csp);
 
