@@ -64,9 +64,10 @@ void generate_dames(int n, CSP * csp)
     }
 
     //INIT CONSTRAINTS
-    for(int l = 0; l < n; l++)
+
+    for(int l = 0, start = 0; l < n; l++, start++)
     {
-        for(int c = 0; c < n; c++)
+        for(int c = start; c < n; c++)
         {
             if(c == l)  //Une variable ne porte pas de contraintes avec elle meme
             {
@@ -123,9 +124,9 @@ void generate_pigeons(int n, CSP * csp)
     }
 
     //INIT CONSTRAINTS
-    for(int l = 0; l < n; l++)
+    for(int l = 0, start = 0; l < n; l++, start++)
     {
-        for(int c = 0; c < n; c++)
+        for(int c = start; c < n; c++)
         {
             if(c == l)  //Une variable ne porte pas de contraintes avec elle meme
             {
@@ -180,8 +181,10 @@ int main()
 {
     CSP csp;
 
-    generate_dames(8, &csp);
-    //generate_pigeons(2, &csp);
+    //generate_dames(8, &csp);
+    generate_pigeons(7, &csp);
+    //write_csp(&csp, "8-dames.txt");
+    write_csp(&csp, "7-pigeons.txt");
     free_CSP(&csp);
     printf("Alright;\n");
 	return 0;
