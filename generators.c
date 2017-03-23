@@ -57,9 +57,9 @@ void generate_dames(int n, CSP * csp)
     }
 
     //INIT TABLE DOMAINE
-    for(int l = 0; l < 0; l++)
+    for(int l = 0; l < n; l++)
     {
-        for(int c = 0; c < 0; c++)
+        for(int c = 0; c < n; c++)
             csp->domaines[l][c] = 1;
     }
 
@@ -116,7 +116,7 @@ void generate_pigeons(int n, CSP * csp)
         csp->valeurs[i] = i;
 
     //INIT TABLE DOMAINE
-    for(int l = 0; l < 0; l++)
+    for(int l = 0; l < n; l++)
     {
         for(int c = 0; c < n - 1; c++)
             csp->domaines[l][c] = 1;
@@ -183,6 +183,6 @@ int main()
     generate_dames(8, &csp);
     //generate_pigeons(2, &csp);
     free_CSP(&csp);
-    printf("Alright;");
+    printf("Alright;\n");
 	return 0;
 }

@@ -15,4 +15,7 @@ typedef struct CSP
 	int **contraintes[VARIABLE_MAX][VARIABLE_MAX];
 } CSP;
 
+int appartient_domaine(int var, int val, int domaines[VARIABLE_MAX][VALEUR_MAX]);
+
+
 #endif //UTIL_H_DEFINED
