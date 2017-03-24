@@ -1,4 +1,5 @@
 #include "generators.h"
+#include "forward-checking.h"
 
 /*
  * Renvoi 1 si les 2 couples appartiennent à une meme diagonale
@@ -181,11 +182,13 @@ int main()
 {
     CSP csp;
 
-    //generate_dames(8, &csp);
-    generate_pigeons(7, &csp);
+    //generate_dames(4, &csp);
+    generate_pigeons(5, &csp);
     //write_csp(&csp, "8-dames.txt");
-    write_csp(&csp, "7-pigeons.txt");
+    int r = forward_checking(&csp);
+    printf("Solution ? : %d\n", r);
+    //write_csp(&csp, "7-pigeons.txt");
     free_CSP(&csp);
-    printf("Alright;\n");
+    //printf("Alright;\n");
 	return 0;
 }

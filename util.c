@@ -5,6 +5,27 @@ int appartient_domaine(int var, int val, int domaines[VARIABLE_MAX][VALEUR_MAX])
 	return domaines[var][val];
 }
 
+/*
+ * Renvoi 1 si l'assignation de la variable num var_curr à l'assignation numero val_curr enfreint au moins une contrainte
+ * Renvoi 0 sinon
+ */
+int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp)
+{	
+	for(int var_deja_assigne = 0; var_deja_assigne < var_curr; var_deja_assigne++) //Ici on assigne dans l'ordre, donc on a assigné toutes la variables précedant celle courante
+	{
+		int ** tuples = csp->contraintes[var_curr][var_deja_assigne];
+					
+		if(tuples != NULL) // Il y a contraintes
+		{
+			if(tuples[val_curr][csp->num_val_assigne[var_deja_assigne] ] == 0) //Tuple non valide
+				return 1;
+		}
+	}
+		
+	return 0;
+}
+
+
 void write_csp(const CSP * csp, const char * nom_fichier)
 {
     FILE *f = NULL;
