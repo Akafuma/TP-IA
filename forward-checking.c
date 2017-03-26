@@ -1,76 +1,79 @@
 #include "forward-checking.h"
 
+
 //Renvoi le nombre de solutions du CSP
 int forward_checking(CSP * csp)
 {
-	int started = 0; // FLAG maybe useless
-	int backtrack = 0; // FLAG
-	int var_assigne[csp->var_length]; // boolean, en faire une pile ?
-	
-	int val_current[csp->var_length];
-	
-	//initialisation des tableaux
-	for(int i = 0; i < csp->var_length; i++)
-	{
-		var_assigne[i] = 0;
-		val_current[i] = 0;
-	}
-	
-	for(int var = 0; var < csp->var_length; var++) // On parcourt les variables dans l'ordre
-	{
-		if(backtrack && (var < 0)) // On backtrack à partir de la racine
-			return 0;//Pas de solution
-		
-		for(int val = 0; val < csp->val_length; val++) // On parcourt toutes les valeurs, utiliser val_assigne plutot???
-		{
-			if(appartient_domaine(var, val, csp->domaines)) // La valeur val appartient au domaine de la variable var
-			{
-				csp->num_val_assigne[var] = val; //on assigne la valeur numero val à var : var = csp->valeurs[val];
-				var_assigne[var] = 1; // on a assigné la variable var
-				//val_current[var] = val;
-				
-				int ** tuples;
-				int contrainte_enfreinte;
-				
-				//Check si une contrainte n'est pas enfreinte
-				contrainte_enfreinte = assignation_enfreint_contraintes(var, val, csp);
-				
-				if(contrainte_enfreinte && (val == csp->val_length - 1)) // si la dernière val du domaine de var ne satisfait pas les contraintes, on backtrack
-				{
-					var_assigne[var] = 0;
-					var -= 2; // on revient à la variable précedente
-					backtrack = 1;
-					printf("backtracking");
-					break;
-				}
-				else if(contrainte_enfreinte) //On assigne une autre valeur du domaine à la variable var, car la courante ne satisfait pas
-					continue;
-				
-				if(var == csp->var_length - 1)//Solution trouvé
-					return 1;
-				
-				/*
-				//Application du forwardchecking ici
-				//Pour chaque variable non instancié partageant une contrainte avec var on va filtrer leur domaine
-				for(int contr = var + 1; contr < csp->var_length; contr++) // pour chaque contrainte non instancié : donc var + 1
-				{
-					tuples = csp->contraintes[var][contr];
-					
-					if(tuples != NULL) // la variable i et contr partagent une contrainte
-					{					
-						//<filtrage du domaine de la variable contr>
-						//Si le domaine de contr devient vide, l'assignation est mauvaise
-							continue;
-							// flag pour savoir si on a épuisé le domaine, on doit backtrack et pas continue;
-							
-						else
-							break;					
-					}
-					
-				}
-				*/
-			}			
-		}//END val
-		
-	}//END var
+    int nb_sol = 0;
+    int EMPILE;
+
+    int tmp[VARIABLE_MAX][VALEUR_MAX];
+    int domaines_courant[VARIABLE_MAX][VALEUR_MAX];
+    domaines_copie(domaines_courant, csp->domaines, csp);
+
+    Pile p;
+    init_pile(csp->var_length, &p);
+
+    for(int num_var = 0; num_var < csp->var_length; num_var++)
+    {
+        EMPILE = 0;
+
+        if(!domaine_var_vide(domaines_courant, num_var))
+        {
+            //;
+
+            for(int num_val = 0; num_val < csp->val_length; num_val++)
+            {
+                if(appartient_domaine(num_var, num_val, domaines_courant))
+                {
+                    //csp->num_val_assigne[num_var] = num_val; // On assigne
+                    domaines_courant[num_var][num_val] = 0;
+
+                    domaines_copie(tmp, domaines_courant, csp);
+
+                    filtrer_domaine(csp, tmp, num_var, num_val);
+
+                    if(domaines_vide(tmp, num_var, csp))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        empile(num_var, num_val, &p);
+                        Etat * e = get_top(&p);
+                        domaines_copie(e->domaines, domaines_courant, csp);//on empile l'�tat avant filtrage
+
+                        domaines_copie(domaines_courant, tmp, csp);
+
+                        if(pile_pleine(&p))
+                        {
+                            nb_sol++;
+                            //print_pile(&p, csp);
+                            depile(&p);
+
+                            continue;
+                        }
+                        EMPILE = 1;
+                        break;
+                    }
+                }
+            }//END FOR num_val
+        }
+
+        if(!EMPILE)
+        {
+            //BACKTRACK
+            Etat * e = depile(&p);
+            if(e == NULL) // Racine
+                return nb_sol;
+
+            num_var = num_var - 2;
+            domaines_copie(domaines_courant, e->domaines, csp);
+
+            continue;
+        }
+
+    }//END FOR num_var
+
+    return nb_sol;
 }
