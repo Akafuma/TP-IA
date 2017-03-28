@@ -60,6 +60,7 @@ int backjumping(CSP * csp)
 
                         empile(num_var, num_val, &p);
                         printf("c'est ok\n");
+                        contrainte_enfreinte=-1;
 
                         if(pile_pleine(&p))
                         {
@@ -89,10 +90,24 @@ int backjumping(CSP * csp)
 
         }
 
+        else
+        {
+            printf("caca");
+            Etat * e = depile(&p);
+            if(e == NULL)// On a dépilé une pile vide
+                return nb_sol;
+            reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
+             num_var=num_var-2;
+
+             continue;
+
+        }
 
         if(!EMPILE)
         {
 
+
+            if(contrainte_enfreinte!=-1){
             if(domaine_var_vide(temp_domaines,contrainte_enfreinte))
                 contrainte_enfreinte--;
             for(;num_var>contrainte_enfreinte;num_var--)
@@ -110,6 +125,17 @@ int backjumping(CSP * csp)
 
 
             num_var = contrainte_enfreinte-1;
+            }
+
+
+            else
+            {
+                    /*Etat * e= depile(&p);
+                    if(e == NULL)
+                        return nb_sol;
+                    reinitialiser_domaine(temp_domaines,num_var, csp->domaines);*/
+                    num_var= num_var-2;
+            }
             printf("var cour %d\n",num_var);
             continue;
 
