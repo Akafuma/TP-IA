@@ -67,6 +67,28 @@ int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp)
 	return 0;
 }
 
+int assignation_enfreint_contraintes_bj(int var_curr, int val_curr, CSP *csp)
+{
+	for(int var_deja_assigne = 0; var_deja_assigne < var_curr; var_deja_assigne++) //Ici on assigne dans l'ordre, donc on a assigné toutes la variables précedant celle courante
+	{
+	    //On boucle sur les lignes, car elles representent les variables déjà assigné
+		//int ** tuples = csp->contraintes[var_curr][var_deja_assigne]; //mauvais sens
+		int ** tuples = csp->contraintes[var_deja_assigne][var_curr];
+
+		if(tuples != NULL) // Il y a contraintes
+		{
+			//if(tuples[val_curr][csp->num_val_assigne[var_deja_assigne] ] == 0) //mauvais sens
+			if(tuples[csp->num_val_assigne[var_deja_assigne] ][val_curr] == 0) //Tuple non valide
+                return var_deja_assigne;
+		}
+
+	}
+
+	return -1;
+}
+
+
+
 /***********************************************
  *         FORWARDCHECKING FUNCTIONS
  ***********************************************/

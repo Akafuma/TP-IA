@@ -1,96 +1,130 @@
-int BT(CSP * csp){
 
-int i,j;
-int bj=0;
-int EMPILE; 
-int nb_sol = 0;
-
-Pile p;
-init_pile(cs⁻>var_length, &p);
-int temp_domaines[VARIABLE_MAX][VALEUR_MAX];
-domaines_copie(temp_domaines, csp->domaines, csp);
-	
-int d[csp->var_length]={0};
-int tab[csp->val_length];
-int modif[csp->var_length]={0};
-
-int **tuples=NULL;
-
-	
+#include "backjumping.h"
 
 
-
-
-for(i=0;i<csp->var_length-1=;i++)  // on choisit la variable
+int backjumping(CSP * csp)
 {
-	if(modif[i]==1)   // tester plutot si on a deja fait un domaine
 
-	for(j=0;j<csp->val_length;j++) // on choisit une valeur
+
+    int EMPILE;
+    int nb_sol = 0;
+
+    Pile p;
+    init_pile(csp->var_length, &p);
+    int temp_domaines[VARIABLE_MAX][VALEUR_MAX];
+    domaines_copie(temp_domaines, csp->domaines, csp);
+    int contrainte_enfreinte;
+
+
+
+
+
+
+
+
+
+
+    for(int num_var=0;num_var< csp->var_length;num_var++)  // on choisit la variable
     {
-		
-		if(csp->domaines[i][j]==1) // si la valeur appartient au domaine
-        {
-            d[i]=csp->valeurs[i];   // assignation
-			for(int k=0;k<i;k++) // on parcourt les var deja assignées
-            {
-				if(csp->contraintes[i][k]!=NULL) // si il y a une contrainte on verifie qu'elle ne soit pas enfreinte
-                {
-					tuples=csp->contraintes[i][k];
-					if(tuples[i][d[k]])     // si tuple valide
-					{
-						bj=0;
-						continue;
-					}
-					else   // sinon on prépare le backjump
-					{
-                        remonte=k;   // remonte prend la valeur de la variable qui partage la contrainte violée
-                        bj=1;        // bj nous indique que l'on ne peut pas assigner une autre valeur pour l'instant
-                        break;
-					}
 
-                //bj=0;
-                //d[i][j]=csp->valeurs[j]
-				}
-			}
-        if(bj==0)
+        EMPILE = 0;
+
+
+        if(!domaine_var_vide(temp_domaines, num_var))
         {
-			tab[i]=j   // tab stocke la case du tableau de valeurs que l'on a choisit d'assigner
-            break;
+
+
+            for(int num_val = 0; num_val < csp->val_length; num_val++)
+            {
+
+                if(appartient_domaine(num_var, num_val, temp_domaines))
+                {
+
+                    csp->num_val_assigne[num_var] = num_val;
+
+                    contrainte_enfreinte = assignation_enfreint_contraintes_bj(num_var, num_val, csp);
+
+                    temp_domaines[num_var][num_val] = 0;
+
+                    if(contrainte_enfreinte!=-1)
+                    {
+                        printf("%d",contrainte_enfreinte);
+                        printf("contrainte enfreinte\n");
+
+                        continue;
+
+                    }
+
+                    else
+                    {
+
+                        empile(num_var, num_val, &p);
+                        printf("c'est ok\n");
+
+                        if(pile_pleine(&p))
+                        {
+                            nb_sol++;
+                            printf("sol trouve\n");
+                            depile(&p);
+                            continue;
+
+
+                        }
+
+                        EMPILE =1;
+
+                        break;
+
+
+                    }
+
+                }
+
+
+
+
+            } // for val
+
+
+
         }
 
 
-		}
+        if(!EMPILE)
+        {
 
-    /*if(bj==1)
-    {
-		i=remonte-1;
-        j=tab[remonte];
+            if(domaine_var_vide(temp_domaines,contrainte_enfreinte))
+                contrainte_enfreinte--;
+            for(;num_var>contrainte_enfreinte;num_var--)
+            {
 
-    }*/
+                Etat * e= depile(&p);
+                if(e == NULL)
+                    return nb_sol;
+                reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
+                printf("reinit de %d\n",num_var);
 
 
-	}
-	if(bj==1)
-    {
-		i=remonte-1;
-        j=tab[remonte];
-        modif[i]=1;
+
+            }
+
+
+            num_var = contrainte_enfreinte-1;
+            printf("var cour %d\n",num_var);
+            continue;
+
+
+        }
 
     }
-	
 
+    return nb_sol;
 }
 
-for(int n=0 ; n<csp->var_length ; n++)
-{
-	if(d[i]==0)
-	{
-		printf("inconsistant");
-		return (0);
-	}
-}
 
-printf("consistant");
-return (1);
 
-}
+
+
+
+
+

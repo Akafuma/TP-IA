@@ -35,6 +35,7 @@ void domaines_copie(int target[VARIABLE_MAX][VALEUR_MAX], int source[VARIABLE_MA
 void reinitialiser_domaine(int domaine[VARIABLE_MAX][VALEUR_MAX], int num_var, int modele[VARIABLE_MAX][VALEUR_MAX]);
 
 int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp);
+int assignation_enfreint_contraintes_bj(int var_curr, int val_curr, CSP *csp);
 
 //FORWARDCHECKING FUNC
 
