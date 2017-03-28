@@ -1,7 +1,7 @@
 # TODO LIST :
 
   - [x] Générateurs
-  - [ ] Forward Checking
+  - [x] Forward Checking
   - [ ] BackJumping
   - [ ] Heuristique MD
   - [ ] Heuristique MC

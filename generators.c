@@ -1,7 +1,10 @@
 #include "generators.h"
+#include "forward-checking.h"
+#include "pile.h"
+#include "backtrack.h"
 
 /*
- * Renvoi 1 si les 2 couples appartiennent Ã  une meme diagonale
+ * Renvoi 1 si les 2 couples appartiennent à une meme diagonale
  * 0 sinon
  */
 int meme_diagonale(int l1, int c1, int l2, int c2)
@@ -14,7 +17,7 @@ int meme_diagonale(int l1, int c1, int l2, int c2)
 
     int base_l, base_c, goal_l, goal_c;
 
-    //on va parcourir la diagonale du haut vers le bas, on cherche donc le couple le  plus haut placÃ©
+    //on va parcourir la diagonale du haut vers le bas, on cherche donc le couple le  plus haut placé
     if(l1 > l2 && c1 > c2) //(l2,c2) est le plus haut
     {
         base_l = l2;
@@ -38,7 +41,7 @@ int meme_diagonale(int l1, int c1, int l2, int c2)
         base_c++;
     }
 
-    return (base_c == goal_c); // base_l est Ã©gale Ã  goal_l, on vÃ©rifie si on a pu atteindre le but en parcourant la diagonale
+    return (base_c == goal_c); // base_l est égale à goal_l, on vérifie si on a pu atteindre le but en parcourant la diagonale
 }
 
 void generate_dames(int n, CSP * csp)
@@ -56,17 +59,20 @@ void generate_dames(int n, CSP * csp)
         csp->valeurs[i] = i;
     }
 
+
+    memset(csp->domaines, 0, sizeof(csp->domaines));
     //INIT TABLE DOMAINE
-    for(int l = 0; l < 0; l++)
+    for(int l = 0; l < n; l++)
     {
-        for(int c = 0; c < 0; c++)
+        for(int c = 0; c < n; c++)
             csp->domaines[l][c] = 1;
     }
 
     //INIT CONSTRAINTS
-    for(int l = 0; l < n; l++)
+
+    for(int l = 0, start = 0; l < n; l++, start++)
     {
-        for(int c = 0; c < n; c++)
+        for(int c = start; c < n; c++)
         {
             if(c == l)  //Une variable ne porte pas de contraintes avec elle meme
             {
@@ -115,17 +121,18 @@ void generate_pigeons(int n, CSP * csp)
     for(int i = 0; i < n - 1; i++)
         csp->valeurs[i] = i;
 
+    memset(csp->domaines, 0, sizeof(csp->domaines));
     //INIT TABLE DOMAINE
-    for(int l = 0; l < 0; l++)
+    for(int l = 0; l < n; l++)
     {
         for(int c = 0; c < n - 1; c++)
             csp->domaines[l][c] = 1;
     }
 
     //INIT CONSTRAINTS
-    for(int l = 0; l < n; l++)
+    for(int l = 0, start = 0; l < n; l++, start++)
     {
-        for(int c = 0; c < n; c++)
+        for(int c = start; c < n; c++)
         {
             if(c == l)  //Une variable ne porte pas de contraintes avec elle meme
             {
@@ -160,9 +167,9 @@ void free_CSP(CSP* csp)
     int n = csp->var_length;
     int m = csp->val_length;
 
-    for(int l = 0; l < n; l++)
+    for(int l = 0, start = 0; l < n; l++, start++)
     {
-        for(int c = 0; c < n; c++)
+        for(int c = start; c < n; c++)
         {
             int ** tuples = csp->contraintes[l][c];
 
@@ -181,8 +188,13 @@ int main()
     CSP csp;
 
     generate_dames(8, &csp);
-    //generate_pigeons(2, &csp);
+    //generate_pigeons(3, &csp);
+    //write_csp(&csp, "4-dames.txt");
+    //int r = forward_checking(&csp);
+    int r = backtrack(&csp);
     free_CSP(&csp);
-    printf("Alright;");
+
+    printf("\nOn denombre %d solutions au CSP\n", r);
+
 	return 0;
 }
