@@ -2,14 +2,21 @@ int BT(CSP * csp){
 
 int i,j;
 int bj=0;
+int EMPILE; 
+int nb_sol = 0;
 
-
+Pile p;
+init_pile(cs⁻>var_length, &p);
+int temp_domaines[VARIABLE_MAX][VALEUR_MAX];
+domaines_copie(temp_domaines, csp->domaines, csp);
+	
 int d[csp->var_length]={0};
 int tab[csp->val_length];
 int modif[csp->var_length]={0};
 
 int **tuples=NULL;
 
+	
 
 
 
