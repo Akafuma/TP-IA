@@ -1,5 +1,22 @@
 #include "forward-checking.h"
 
+void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_assigne, int val_assigne)
+{
+    //On boucle sur les colonnes, car elles représentent les variables non assignés
+    for(int nvar = var_assigne + 1; nvar < csp->var_length; nvar++)
+    {
+        int ** tuples = csp->contraintes[var_assigne][nvar];
+
+        if(tuples != NULL)
+        {
+            for(int nval = 0; nval < csp->val_length; nval++)
+            {
+                if(tuples[val_assigne][nval] == 0)
+                    domaine[nvar][nval] = 0;
+            }
+        }
+    }
+}
 
 //Renvoi le nombre de solutions du CSP
 int forward_checking(CSP * csp)
@@ -25,7 +42,7 @@ int forward_checking(CSP * csp)
             {
                 if(appartient_domaine(num_var, num_val, domaines_courant))
                 {
-                    //csp->num_val_assigne[num_var] = num_val; // On assigne
+                    csp->num_val_assigne[num_var] = num_val; // On assigne
                     domaines_courant[num_var][num_val] = 0;
 
                     domaines_copie(tmp, domaines_courant, csp);

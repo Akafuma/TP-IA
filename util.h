@@ -34,10 +34,4 @@ void domaines_copie(int target[VARIABLE_MAX][VALEUR_MAX], int source[VARIABLE_MA
 
 void reinitialiser_domaine(int domaine[VARIABLE_MAX][VALEUR_MAX], int num_var, int modele[VARIABLE_MAX][VALEUR_MAX]);
 
-int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp);
-
-//FORWARDCHECKING FUNC
-
-void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_assigne, int val_assigne);
-
 #endif //UTIL_H_DEFINED

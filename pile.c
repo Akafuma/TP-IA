@@ -29,18 +29,6 @@ void empile(int n_var, int n_val, Pile * pile)
     pile->etats[pile->top].num_val = n_val;
 }
 
-void empile_etat(Etat e, Pile * p)
-{
-    if(pile_pleine(p))
-    {
-        printf("Echec empilage, la pile est pleine\n");
-        exit(EXIT_FAILURE);
-    }
-
-    p->top++;
-    p->etats[p->top] = e;
-}
-
 Etat * depile(Pile * pile)
 {
     Etat * e;

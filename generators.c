@@ -1,9 +1,4 @@
 #include "generators.h"
-#include "forward-checking.h"
-#include "pile.h"
-#include "backtrack.h"
-#include "forward-checking-md.h"
-#include "csp_output.h"
 
 /*
  * Renvoi 1 si les 2 couples appartiennent à une meme diagonale
@@ -184,21 +179,4 @@ void free_CSP(CSP* csp)
             }
         }
     }
-}
-
-int main()
-{
-    CSP csp;
-
-    generate_dames(6, &csp);
-    //generate_pigeons(8, &csp);
-    //write_csp(&csp, "5-dames.txt");
-    //int r = forward_checking(&csp);
-    //int r = backtrack(&csp);
-    int r = forward_checking_md(&csp);
-    free_CSP(&csp);
-
-    printf("\nOn denombre %d solutions au CSP\n", r);
-
-	return 0;
 }
