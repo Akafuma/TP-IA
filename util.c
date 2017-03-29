@@ -74,7 +74,6 @@ int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp)
 void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_assigne, int val_assigne)
 {
     //On boucle sur les colonnes, car elles représentent les variables non assignés
-
     for(int nvar = var_assigne + 1; nvar < csp->var_length; nvar++)
     {
         int ** tuples = csp->contraintes[var_assigne][nvar];

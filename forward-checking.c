@@ -20,7 +20,6 @@ int forward_checking(CSP * csp)
 
         if(!domaine_var_vide(domaines_courant, num_var))
         {
-            //;
 
             for(int num_val = 0; num_val < csp->val_length; num_val++)
             {
