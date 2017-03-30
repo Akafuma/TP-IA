@@ -2,8 +2,6 @@
 #define GENERATORS_H_DEFINED
 
 #include "util.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 void generate_pigeons(int n, CSP * csp);
 

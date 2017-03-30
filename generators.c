@@ -1,7 +1,4 @@
 #include "generators.h"
-#include "forward-checking.h"
-#include "pile.h"
-#include "backtrack.h"
 
 /*
  * Renvoi 1 si les 2 couples appartiennent à une meme diagonale
@@ -82,9 +79,9 @@ void generate_dames(int n, CSP * csp)
 
             int ** tuples = NULL;
             //Allocation
-            tuples = malloc(sizeof(int *) * n);
+            tuples = malloc(sizeof(int *) * csp->val_length);
             for(int i = 0; i < n; i++)
-                tuples[i] = malloc(sizeof(int) * n);
+                tuples[i] = malloc(sizeof(int) * csp->val_length);
 
             //INIT TUPLES COMPATIBLES
             for(int u = 0; u < n; u++)
@@ -99,7 +96,7 @@ void generate_dames(int n, CSP * csp)
                         tuples[u][v] = 0;
                 }
             }
-
+            csp->contraintes[c][l] = tuples;//ATTENTION
             csp->contraintes[l][c] = tuples;
         }
     }
@@ -142,9 +139,9 @@ void generate_pigeons(int n, CSP * csp)
 
             int **tuples = NULL;
             //Allocation
-            tuples = malloc(sizeof(int *) * (n - 1));
+            tuples = malloc(sizeof(int *) * csp->val_length);
             for(int i = 0; i < n - 1; i++)
-                tuples[i] = malloc(sizeof(int) * (n - 1));
+                tuples[i] = malloc(sizeof(int) * csp->val_length);
 
             //INIT TUPLES COMPATIBLES
             for(int u = 0; u < n - 1; u++)
@@ -158,6 +155,7 @@ void generate_pigeons(int n, CSP * csp)
                 }
             }
             csp->contraintes[l][c] = tuples;
+            csp->contraintes[c][l] = tuples;//ATTENTION
         }
     }
 }
@@ -181,20 +179,4 @@ void free_CSP(CSP* csp)
             }
         }
     }
-}
-
-int main()
-{
-    CSP csp;
-
-    generate_dames(8, &csp);
-    //generate_pigeons(3, &csp);
-    //write_csp(&csp, "4-dames.txt");
-    //int r = forward_checking(&csp);
-    int r = backtrack(&csp);
-    free_CSP(&csp);
-
-    printf("\nOn denombre %d solutions au CSP\n", r);
-
-	return 0;
 }

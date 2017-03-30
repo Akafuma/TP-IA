@@ -27,10 +27,6 @@ int pile_vide(Pile * pile);
 
 void empile(int n_var, int n_val, Pile * pile);
 
-Etat make_etat(int nvar, int nval, int d[VARIABLE_MAX][VALEUR_MAX]);
-
-void empile_etat(Etat e, Pile * p); // FORWARDCHECKING
-
 Etat * depile(Pile * pile);
 
 Etat * get_top(Pile * pile);
