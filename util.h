@@ -13,9 +13,9 @@ typedef struct CSP
     int var_length;
     int val_length;
 
-    int num_val_assigne[VARIABLE_MAX];  // Stocke le numéro de la valeur assigné à la variable, soit var l'indice d'une variable assigné
+    int num_val_assigne[VARIABLE_MAX];  // Stocke le numÃ©ro de la valeur assignÃ© Ã  la variable, soit var l'indice d'une variable assignÃ©
                                         //La valeur de var = csp.valeurs[csp.num_val_assigne[var]];
-    int var_assigne[VARIABLE_MAX]; //Tableau de bool pour savoir si la var est assigné
+    int var_assigne[VARIABLE_MAX]; //Tableau de bool pour savoir si la var est assignÃ©
     //inutile pour l'instant
 
 	int variables[VARIABLE_MAX];
