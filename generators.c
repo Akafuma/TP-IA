@@ -96,7 +96,7 @@ void generate_dames(int n, CSP * csp)
                         tuples[u][v] = 0;
                 }
             }
-            csp->contraintes[c][l] = tuples;//ATTENTION
+            csp->contraintes[c][l] = tuples;
             csp->contraintes[l][c] = tuples;
         }
     }
@@ -154,8 +154,9 @@ void generate_pigeons(int n, CSP * csp)
                         tuples[u][v] = 0;
                 }
             }
+
             csp->contraintes[l][c] = tuples;
-            csp->contraintes[c][l] = tuples;//ATTENTION
+            csp->contraintes[c][l] = tuples;
         }
     }
 }

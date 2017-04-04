@@ -47,11 +47,12 @@ int choisir_variable_md(CSP * csp, int domaines[VARIABLE_MAX][VALEUR_MAX])
 {
     int var_choisi = 0;
     int min = VALEUR_MAX + 1;
+    int count;
     for(int var = 0; var < csp->var_length; var++)
     {
         if(csp->var_assigne[var] == 0)
         {
-            int count = 0;
+            count = 0;
             for(int val = 0; val < csp->val_length; val++)
             {
                 if(domaines[var][val] == 1)
@@ -74,6 +75,7 @@ int choisir_variable_md(CSP * csp, int domaines[VARIABLE_MAX][VALEUR_MAX])
 int forward_checking_md(CSP * csp)
 {
     int nb_sol = 0;
+    double nb_noeud = 0;
     int EMPILE;
 
     int tmp[VARIABLE_MAX][VALEUR_MAX];
@@ -100,6 +102,7 @@ int forward_checking_md(CSP * csp)
                     domaines_courant[num_var][num_val] = 0;
                     csp->var_assigne[num_var] = 1;
                     csp->num_val_assigne[num_var] = num_val; // On assigne
+                    nb_noeud++;
 
                     domaines_copie(tmp, domaines_courant, csp);
 
@@ -141,7 +144,10 @@ int forward_checking_md(CSP * csp)
             csp->var_assigne[num_var] = 0;
             Etat * e = depile(&p);
             if(e == NULL) // Racine
+            {
+                //printf("Noeuds visite %f\n", nb_noeud);
                 return nb_sol;
+            }
 
             csp->var_assigne[e->num_var] = 0;
             domaines_copie(domaines_courant, e->domaines, csp);

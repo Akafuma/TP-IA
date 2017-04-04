@@ -2,7 +2,6 @@
 
 void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_assigne, int val_assigne)
 {
-    //On boucle sur les colonnes, car elles représentent les variables non assignés
     for(int nvar = var_assigne + 1; nvar < csp->var_length; nvar++)
     {
         int ** tuples = csp->contraintes[var_assigne][nvar];
@@ -22,6 +21,7 @@ void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_a
 int forward_checking(CSP * csp)
 {
     int nb_sol = 0;
+    double nb_noeud = 0;
     int EMPILE;
 
     int tmp[VARIABLE_MAX][VALEUR_MAX];
@@ -44,6 +44,7 @@ int forward_checking(CSP * csp)
                 {
                     csp->num_val_assigne[num_var] = num_val; // On assigne
                     domaines_courant[num_var][num_val] = 0;
+                    nb_noeud++;
 
                     domaines_copie(tmp, domaines_courant, csp);
 
@@ -81,7 +82,10 @@ int forward_checking(CSP * csp)
             //BACKTRACK
             Etat * e = depile(&p);
             if(e == NULL) // Racine
+            {
+                //printf("Noeuds visite %f\n", nb_noeud);
                 return nb_sol;
+            }
 
             num_var = num_var - 2;
             domaines_copie(domaines_courant, e->domaines, csp);

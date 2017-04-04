@@ -9,7 +9,7 @@ typedef struct Etat
     int num_var;
     int num_val;
 
-    int domaines[VARIABLE_MAX][VALEUR_MAX]; // pour forward checking
+    int domaines[VARIABLE_MAX][VALEUR_MAX]; // Pour forward checking
 }Etat;
 
 typedef struct Pile

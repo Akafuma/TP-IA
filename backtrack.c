@@ -8,13 +8,10 @@ int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp)
 {
 	for(int var_deja_assigne = 0; var_deja_assigne < var_curr; var_deja_assigne++) //Ici on assigne dans l'ordre, donc on a assigné toutes la variables précedant celle courante
 	{
-	    //On boucle sur les lignes, car elles representent les variables déjà assigné
-		//int ** tuples = csp->contraintes[var_curr][var_deja_assigne]; //mauvais sens
 		int ** tuples = csp->contraintes[var_deja_assigne][var_curr];
 
 		if(tuples != NULL) // Il y a contraintes
 		{
-			//if(tuples[val_curr][csp->num_val_assigne[var_deja_assigne] ] == 0) //mauvais sens
 			if(tuples[csp->num_val_assigne[var_deja_assigne] ][val_curr] == 0) //Tuple non valide
                 return 1;
 		}
@@ -28,6 +25,7 @@ int backtrack(CSP * csp)
 {
     int EMPILE;
     int nb_sol = 0;
+    double nb_noeud = 0;
 
     Pile p;
     init_pile(csp->var_length, &p);
@@ -52,6 +50,7 @@ int backtrack(CSP * csp)
                     int contrainte_enfreinte = assignation_enfreint_contraintes(num_var, num_val, csp);
 
                     temp_domaines[num_var][num_val] = 0; //On note que la valeur a été affecté/essayé
+                    nb_noeud++;
 
                     if(contrainte_enfreinte)//On tente d'assigner une nouvelle valeur
                     {
@@ -84,7 +83,10 @@ int backtrack(CSP * csp)
             //BACKTRACK
             Etat * e = depile(&p);
             if(e == NULL)// On a dépilé une pile vide
+            {
+                //printf("Noeuds visite %f\n", nb_noeud);
                 return nb_sol;
+            }
 
             reinitialiser_domaine(temp_domaines, num_var, csp->domaines);
 
