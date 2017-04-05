@@ -4,7 +4,7 @@ OPTS=
 
 all: demo
 
-demo: main.o generators.o backtrack.o forward-checking.o forward-checking-md.o pile.o util.o csp_output.o
+demo: main.o generators.o backtrack.o forward-checking.o forward-checking-md.o backjumping.o pile.o util.o csp_output.o
 	$(CC) -o $@ $^
 
 main.o: main.c generators.h backtrack.h forward-checking.h forward-checking-md.h util.h csp_output.h
@@ -21,6 +21,9 @@ forward-checking.o: forward-checking.c forward-checking.h
 	
 forward-checking-md.o: forward-checking-md.c forward-checking-md.h
 	$(CC) -o forward-checking-md.o -c forward-checking-md.c $(CFLAGS) $(OPTS)
+	
+backjumping.o: backjumping.c backjumping.h
+	$(CC) -o backjumping.o -c backjumping.c $(CFLAGS) $(OPTS)
 	
 pile.o: pile.c pile.h
 	$(CC) -o pile.o -c pile.c $(CFLAGS)
