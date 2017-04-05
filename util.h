@@ -1,6 +1,8 @@
 #ifndef UTIL_H_DEFINED
 #define UTIL_H_DEFINED
 
+#define PRINT_CONTRAINTES 1
+//#define PRINT_NOEUD 1
 
 #ifdef PRINT_CONTRAINTES
     double nb_contraintes;
