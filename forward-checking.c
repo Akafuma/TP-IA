@@ -1,5 +1,7 @@
 #include "forward-checking.h"
 
+
+
 void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_assigne, int val_assigne)
 {
     for(int nvar = var_assigne + 1; nvar < csp->var_length; nvar++)
@@ -10,6 +12,9 @@ void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_a
         {
             for(int nval = 0; nval < csp->val_length; nval++)
             {
+                #ifdef PRINT_CONTRAINTES
+                    nb_contraintes++;
+                #endif //PRINT_CONTRAINTES
                 if(tuples[val_assigne][nval] == 0)
                     domaine[nvar][nval] = 0;
             }
@@ -21,7 +26,12 @@ void filtrer_domaine(CSP * csp, int domaine[VARIABLE_MAX][VALEUR_MAX], int var_a
 int forward_checking(CSP * csp)
 {
     int nb_sol = 0;
-    double nb_noeud = 0;
+    #ifdef PRINT_NOEUD
+        double nb_noeud = 0;
+    #endif // PRINT_NOEUD
+    #ifdef PRINT_CONTRAINTES
+        nb_contraintes = 0;
+    #endif //PRINT_CONTRAINTES
     int EMPILE;
 
     int tmp[VARIABLE_MAX][VALEUR_MAX];
@@ -44,7 +54,9 @@ int forward_checking(CSP * csp)
                 {
                     csp->num_val_assigne[num_var] = num_val; // On assigne
                     domaines_courant[num_var][num_val] = 0;
-                    nb_noeud++;
+                    #ifdef PRINT_NOEUD
+                        nb_noeud++;
+                    #endif // PRINT_NOEUD
 
                     domaines_copie(tmp, domaines_courant, csp);
 
@@ -65,7 +77,10 @@ int forward_checking(CSP * csp)
                         if(pile_pleine(&p))
                         {
                             nb_sol++;
-                            //print_pile(&p, csp);
+                            #ifdef PRINT_SOL
+                                print_pile(&p, csp);
+                            #endif // PRINT_SOL
+
                             depile(&p);
 
                             continue;
@@ -83,7 +98,13 @@ int forward_checking(CSP * csp)
             Etat * e = depile(&p);
             if(e == NULL) // Racine
             {
-                //printf("Noeuds visite %f\n", nb_noeud);
+                #ifdef PRINT_NOEUD
+                    printf("Noeuds visite %f\n", nb_noeud);
+                #endif // PRINT_NOEUD
+                #ifdef PRINT_CONTRAINTES
+                    printf("Contraintes explorees : %f\n", nb_contraintes);
+                #endif //PRINT_CONTRAINTES
+
                 return nb_sol;
             }
 

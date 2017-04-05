@@ -12,6 +12,9 @@ int assignation_enfreint_contraintes(int var_curr, int val_curr, CSP *csp)
 
 		if(tuples != NULL) // Il y a contraintes
 		{
+		    #ifdef PRINT_CONTRAINTES
+                nb_contraintes++;
+            #endif //PRINT_CONTRAINTES
 			if(tuples[csp->num_val_assigne[var_deja_assigne] ][val_curr] == 0) //Tuple non valide
                 return 1;
 		}
@@ -25,7 +28,13 @@ int backtrack(CSP * csp)
 {
     int EMPILE;
     int nb_sol = 0;
-    double nb_noeud = 0;
+    #ifdef PRINT_NOEUD
+        double nb_noeud = 0;
+    #endif // PRINT_NOEUD
+
+    #ifdef PRINT_CONTRAINTES
+        nb_contraintes = 0;
+    #endif //PRINT_CONTRAINTES
 
     Pile p;
     init_pile(csp->var_length, &p);
@@ -50,7 +59,9 @@ int backtrack(CSP * csp)
                     int contrainte_enfreinte = assignation_enfreint_contraintes(num_var, num_val, csp);
 
                     temp_domaines[num_var][num_val] = 0; //On note que la valeur a été affecté/essayé
-                    nb_noeud++;
+                    #ifdef PRINT_NOEUD
+                        nb_noeud++;
+                    #endif // PRINT_NOEUD
 
                     if(contrainte_enfreinte)//On tente d'assigner une nouvelle valeur
                     {
@@ -64,7 +75,9 @@ int backtrack(CSP * csp)
                         if(pile_pleine(&p))//SOLUTION
                         {
                             nb_sol++;
-                            //print_pile(&p, csp);
+                            #ifdef PRINT_SOL
+                                print_pile(&p, csp);
+                            #endif // PRINT_SOL
                             //On dépile pour continuer à chercher toutes les solutions
                             depile(&p);
 
@@ -84,7 +97,12 @@ int backtrack(CSP * csp)
             Etat * e = depile(&p);
             if(e == NULL)// On a dépilé une pile vide
             {
-                //printf("Noeuds visite %f\n", nb_noeud);
+                #ifdef PRINT_NOEUD
+                    printf("Noeuds visite %f\n", nb_noeud);
+                #endif // PRINT_NOEUD
+                #ifdef PRINT_CONTRAINTES
+                    printf("Contraintes explorees : %f\n", nb_contraintes);
+                #endif //PRINT_CONTRAINTES
                 return nb_sol;
             }
 
