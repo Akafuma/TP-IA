@@ -3,16 +3,14 @@
 #include <windows.h>
 int assignation_enfreint_contraintes_bjh(int var_curr, int val_curr, CSP *csp,int tab_tour[])
 {
-    int con=-1;
+    int con = -1;
     int ** tuples;
-	for(int var_deja_assigne = 0; var_deja_assigne < csp->var_length; var_deja_assigne++) //Ici on assigne dans l'ordre, donc on a assigné toutes la variables précedant celle courante
+	for(int var_deja_assigne = 0; var_deja_assigne < csp->var_length; var_deja_assigne++) //Ici on assigne dans l'ordre, donc on a assignÃ© toutes la variables prÃ©cedant celle courante
 	{
 
 	    if(csp->num_val_assigne[var_deja_assigne]!=-1)
         {
-
-
-            //On boucle sur les lignes, car elles representent les variables déjà assigné
+            //On boucle sur les lignes, car elles representent les variables dÃ©jÃ  assignÃ©
             //int ** tuples = csp->contraintes[var_curr][var_deja_assigne]; //mauvais sens
             if(var_deja_assigne>var_curr)
                 tuples = csp->contraintes[var_curr][var_deja_assigne];
@@ -81,17 +79,8 @@ int nb_contrainte_curr=-1;
 
 
     }
-
-
     return var_choisie;
-
 }
-
-
-
-
-
-
 
 int backjumping_h(CSP * csp)
 {
@@ -108,7 +97,7 @@ int backjumping_h(CSP * csp)
     int temp_domaines[VARIABLE_MAX][VALEUR_MAX];
     domaines_copie(temp_domaines, csp->domaines, csp);
     int contrainte_enfreinte = -1;  // pour connaitre la contrainte enfreinte courante
-    int tab_contraintes[csp->var_length];  // tabl qui garde en mémoire la variable la plus profonde qui partage la contrainte avec la variable courante
+    int tab_contraintes[csp->var_length];  // tabl qui garde en mÃ©moire la variable la plus profonde qui partage la contrainte avec la variable courante
     int tab_tour[5]={0,4,3,2,1};
 
     for(int i=0;i<csp->var_length;i++){
@@ -149,7 +138,7 @@ int backjumping_h(CSP * csp)
                     printf("%d \n", contrainte_enfreinte);
 
                     if(contrainte_enfreinte!=-1){
-                            if(tab_tour[contrainte_enfreinte]>tab_contraintes[num_var])// si on trouve une var plus profonde qui partage la contrainte on l'écrase dans le tab
+                            if(tab_tour[contrainte_enfreinte]>tab_contraintes[num_var])// si on trouve une var plus profonde qui partage la contrainte on l'Ã©crase dans le tab
                         tab_contraintes[num_var]=contrainte_enfreinte;}
 
                     printf("On assigne %d a la variable%d\n",num_val, num_var);
@@ -178,7 +167,7 @@ int backjumping_h(CSP * csp)
 
 
 
-                        if(pile_pleine(&p)) // on a trouvé une solution on cherche une autre valeur pour cette variable
+                        if(pile_pleine(&p)) // on a trouvÃ© une solution on cherche une autre valeur pour cette variable
                         {
 
                             nb_sol++;
@@ -240,7 +229,7 @@ int backjumping_h(CSP * csp)
         }
     if(!EMPILE)
         {
-            if(!DOMAINE)  // si on est la c'est qu'on a trouvé une sol mais le domaine est vide donc on bt
+            if(!DOMAINE)  // si on est la c'est qu'on a trouvÃ© une sol mais le domaine est vide donc on bt
             {
                 if(num_var>der)
                 {
@@ -312,11 +301,6 @@ int backjumping_h(CSP * csp)
                     csp->var_assigne[num_var] = 0;
 
                     printf("reinit de %d\n",num_var);
-
-
-
-
-
                 }
             }
             else
