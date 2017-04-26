@@ -1,7 +1,7 @@
 
 #include "backjumpingh.h"
 
-int assignation_enfreint_contraintes_bjh(int var_curr, int val_curr, CSP *csp,int tab_tour[])
+int assignation_enfreint_contraintes_bjh(int var_curr, int val_curr, CSP *csp,int tab_tour[]) // Renvoie la derniere variable assigné qui partage al contrainte
 {
     int con=-1;
     int ** tuples;
@@ -26,8 +26,8 @@ int assignation_enfreint_contraintes_bjh(int var_curr, int val_curr, CSP *csp,in
                 {
                     if(con==-1)
                         con=var_deja_assigne;
-                    else if(tab_tour[var_deja_assigne]>tab_tour[con]){
-                      con=var_deja_assigne;}
+                    else if(tab_tour[var_deja_assigne]>tab_tour[con])
+                        con=var_deja_assigne;
                     continue;
                 }
 
@@ -39,9 +39,9 @@ int assignation_enfreint_contraintes_bjh(int var_curr, int val_curr, CSP *csp,in
 	//return -1;
 }
 
-int nb_assignation_enfreint_contraintes(int var_curr, CSP *csp)
+int nb_assignation_enfreint_contraintes(int var_curr, CSP *csp) // nombre de contrainte que partage la var courante avec les vars déjà assignées
 {
-    int nb_contraintes;
+    int nb_contraintes=0;
     int num_var=0;
 
     while(num_var!=csp->var_length)
@@ -62,10 +62,11 @@ int nb_assignation_enfreint_contraintes(int var_curr, CSP *csp)
     return nb_contraintes;
 }
 
-int choisir_var(CSP * csp){
+int choisir_var(CSP * csp) // choisie la variable qui possède le plus de contraintes avec les variables déjà assignées
+{
 
-int var_choisie=-1;
-int nb_contrainte_curr=-1;
+    int var_choisie=-1;
+    int nb_contrainte_curr=-1;
 
     for(int num_var=0;num_var<csp->var_length;num_var++)
     {
@@ -96,13 +97,13 @@ int nb_contrainte_curr=-1;
 
 int backjumping_h(CSP * csp)
 {
-    int der=-1;
+    int der_var_assigne=-1;
 
-    int DOMAINE; // flag si domaine vide alors on bt
+    int DOMAINE; // flag si domaine vide alors on revient sur la dernière variable assignée
     int EMPILE;
     int nb_sol = 0;
     int num_var=0;
-    int tour=0;
+    int tour=0;  // pour connaître l'ordre dans lequel les vars ont été assignées
 
     Pile p;
     init_pile(csp->var_length, &p);
@@ -110,35 +111,31 @@ int backjumping_h(CSP * csp)
     domaines_copie(temp_domaines, csp->domaines, csp);
     int contrainte_enfreinte = -1;  // pour connaitre la contrainte enfreinte courante
     int tab_contraintes[csp->var_length];  // tabl qui garde en mémoire la variable la plus profonde qui partage la contrainte avec la variable courante
-    //int tab_tour[5]={0,4,3,2,1};
-    int tab_tour[csp->var_length];
-    for(int i=0;i<csp->var_length;i++){
+
+    int tab_tour[csp->var_length]; // on stocke quand la var à été assignée
+    for(int i=0;i<csp->var_length;i++) //INITIALISATION
+    {
         tab_contraintes[i]=-1;
         csp->num_val_assigne[i] = -1;
-        csp->var_assigne[num_var]= 0;
-        tab_tour[num_var]=-1;
-        }
+        csp->var_assigne[i]= 0;
+        tab_tour[i]=-1;
+    }
 
 
-    while(num_var<csp->var_length)
-    //while(1)
+    while(1)
     {
-
-
-        //if(contrainte_enfreinte==-1)
-        //num_var=choisir_var(csp);
-        printf("var choisie%d\n",num_var);
-        printf("tour %d\n",tab_tour[num_var]);
-       // printf("csp %d\n",csp->var_length);
+        if(tab_tour[num_var]==-1){
+        tour++;
+        tab_tour[num_var]=tour;}
         EMPILE=0;
-        //if(num_var>=0){
-
 
         if(!domaine_var_vide(temp_domaines, num_var))
         {
 
+
             for(int num_val=0; num_val< csp->val_length; num_val++)
             {
+
 
                 if(appartient_domaine(num_var, num_val, temp_domaines))
                 {
@@ -149,28 +146,20 @@ int backjumping_h(CSP * csp)
 
 
                     contrainte_enfreinte = assignation_enfreint_contraintes_bjh(num_var, num_val, csp,tab_tour);
-                    printf("%d \n", contrainte_enfreinte);
 
-                    //if(contrainte_enfreinte>tab_contraintes[num_var])// si on trouve une var plus profonde qui partage la contrainte on l'écrase dans le tab
-                        //tab_contraintes[num_var]=contrainte_enfreinte;
+                    if(contrainte_enfreinte!=-1) // si on a une contrainte
+                    {
 
-                    if(contrainte_enfreinte!=-1){
-                            printf("CACA %d\n",tab_tour[tab_contraintes[num_var]]);
-                            if(tab_contraintes[num_var]==-1)
+                            if(tab_contraintes[num_var]==-1) // si c'est la première rencontré par la var courante
                                 tab_contraintes[num_var]=contrainte_enfreinte;
-                            else if(tab_tour[contrainte_enfreinte]>tab_tour[tab_contraintes[num_var]])// si on trouve une var plus profonde qui partage la contrainte on l'écrase dans le tab
-                                tab_contraintes[num_var]=contrainte_enfreinte;}
-
-                    printf("On assigne %d a la variable%d\n",num_val, num_var);
+                            else if(tab_tour[contrainte_enfreinte]>tab_tour[tab_contraintes[num_var]])// sinon on vérifie si il existe une contrainte avec une variable plus profonde
+                                tab_contraintes[num_var]=contrainte_enfreinte;
+                    }
 
                     temp_domaines[num_var][num_val] = 0;
 
                     if(contrainte_enfreinte!=-1)
                     {
-
-
-                        printf("%d contrainte enfreinte\n",contrainte_enfreinte);
-
                         continue;
 
                     }
@@ -178,12 +167,7 @@ int backjumping_h(CSP * csp)
                     else // on peut assigner la var
                     {
 
-
-
                         empile(num_var, num_val, &p);
-                        tour++;
-                        tab_tour[num_var]=tour;
-                       printf("Empile\n");
 
 
 
@@ -192,22 +176,15 @@ int backjumping_h(CSP * csp)
 
                             nb_sol++;
 
-                            printf("sol trouve\n");
-
-                            /*if(nb_sol==4)
-                                return nb_sol;*/
-                           // write(csp, "Solution2.txt",nb_sol);
                             Etat * e = depile(&p);
-                            tour--;
-                            tab_tour[num_var]=-1;
-                            printf("Depile\n");
+                           // tour--;
+                           // tab_tour[num_var]=-1;
 
-
-                            if(domaine_var_vide(temp_domaines, num_var)){
+                            if(domaine_var_vide(temp_domaines, num_var)) // si on a trouvé une sol mais le domaine de la var courante est vide
+                            {
                                 DOMAINE=0;
-
-
-                                der=e->num_var;}
+                                der_var_assigne=e->num_var;
+                            }
 
                             continue;
 
@@ -218,56 +195,44 @@ int backjumping_h(CSP * csp)
 
                         break;
 
+                    }
+
+
                 }
 
 
+
             }
-
-
-
         }
-    }
-    else
-    {
-        Etat * e= depile(&p);
-        tour--;
 
-        printf("Depile\n");
-        printf("CACA\n");
-        if(e == NULL)
-            return nb_sol;
-        reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
-        tab_contraintes[num_var]=-1;
-        csp->num_val_assigne[num_var]=-1;
-        csp->var_assigne[num_var] = 0;
-
-        tab_tour[num_var]=-1;
-        num_var=e->num_var;
-
-        continue;
-
-        }
-    if(!EMPILE)
+        if(!EMPILE)
         {
-            if(!DOMAINE)  // si on est la c'est qu'on a trouvé une sol mais le domaine est vide donc on bt
+            if(!DOMAINE)  // si on est la c'est qu'on a trouvé une sol mais le domaine est vide donc on revient sur la derniere var assignée
             {
-                if(num_var>der)
+                if(num_var>der_var_assigne)
                 {
-                    for(;num_var>der;num_var--)
+                    for(;num_var>der_var_assigne;num_var--)
                     {
-                         if(csp->num_val_assigne[num_var] != -1){
-                                Etat * e= depile(&p);
-                                tour--;
+                        if(csp->num_val_assigne[num_var] != -1)
+                        {
 
-                                printf("Depile\n");
-                                if(e == NULL)
-                                    return nb_sol;}
-                        reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
-                        tab_contraintes[num_var]=-1;
-                        csp->num_val_assigne[num_var]=-1;
-                        csp->var_assigne[num_var] = 0;
-                        tab_tour[num_var]=-1;
+                                if(tab_tour[num_var]>tab_tour[der_var_assigne])
+                                {
+                                    Etat * e= depile(&p);
+                                    tour--;
 
+
+                                    if(e == NULL)
+                                        return nb_sol;
+
+
+                                    reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
+                                    tab_contraintes[num_var]=-1;
+                                    csp->num_val_assigne[num_var]=-1;
+                                    csp->var_assigne[num_var] = 0;
+                                    tab_tour[num_var]=-1;
+                                }
+                        }
 
                     }
 
@@ -276,32 +241,40 @@ int backjumping_h(CSP * csp)
                 else
                 {
 
-                    for(;num_var<der;num_var++)
+                    for(;num_var<der_var_assigne;num_var++)
                     {
-                        if(csp->num_val_assigne[num_var] != -1){
-                            Etat * e= depile(&p);
-                            tour--;
+                        if(csp->num_val_assigne[num_var] != -1)
+                        {
+                             if(tab_tour[num_var]>tab_tour[der_var_assigne])
+                            {
+                                Etat * e= depile(&p);
+                                tour--;
 
-                            printf("Depile\n");
-                            if(e == NULL)
-                                return nb_sol;}
+
+                                if(e == NULL)
+                                    return nb_sol;
+
+
                         reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
                         tab_contraintes[num_var]=-1;
                         csp->num_val_assigne[num_var]=-1;
                         csp->var_assigne[num_var] = 0;
                         tab_tour[num_var]=-1;
-
+                            }
+                        }
 
                     }
                 }
 
-                num_var=der;
+                num_var=der_var_assigne;
                 DOMAINE=1;
 
                 continue;
 
             }
             contrainte_enfreinte=tab_contraintes[num_var];
+            if(contrainte_enfreinte==-1)
+                return nb_sol;
 
 
             if(num_var>contrainte_enfreinte)
@@ -310,23 +283,25 @@ int backjumping_h(CSP * csp)
                 for(;num_var>contrainte_enfreinte;num_var--)
                 {
 
-                    if(csp->num_val_assigne[num_var] != -1){
-                        Etat * e= depile(&p);
-                        tour--;
+                    if(csp->num_val_assigne[num_var] != -1)
+                    {
+                        if(tab_tour[num_var]>tab_tour[contrainte_enfreinte])
+                        {
+                            Etat * e= depile(&p);
+                            tour--;
 
-                        printf("Depile\n");
-                        if(e == NULL)
-                            return nb_sol;}
+
+                            if(e == NULL)
+                                return nb_sol;
+
+
                     reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
                     tab_contraintes[num_var]=-1;
                     csp->num_val_assigne[num_var]=-1;
                     csp->var_assigne[num_var] = 0;
                     tab_tour[num_var]=-1;
-                    printf("reinit de %d\n",num_var);
-
-
-
-
+                        }
+                    }
 
                 }
             }
@@ -334,20 +309,25 @@ int backjumping_h(CSP * csp)
             {
                 for(;num_var<contrainte_enfreinte;num_var++)
                 {
-                    if(csp->num_val_assigne[num_var] != -1){
-                        Etat * e= depile(&p);
-                        tour--;
+                    if(csp->num_val_assigne[num_var] != -1)
+                    {
+                        if(tab_tour[num_var]>tab_tour[contrainte_enfreinte])
+                        {
+                            Etat * e= depile(&p);
+                            tour--;
 
-                        printf("Depile\n");
-                        if(e == NULL)
-                            return nb_sol;}
+
+                            if(e == NULL)
+                                return nb_sol;
+
+
                     reinitialiser_domaine(temp_domaines,num_var, csp->domaines);
                     tab_contraintes[num_var]=-1;
                     csp->num_val_assigne[num_var]=-1;
                     csp->var_assigne[num_var] = 0;
                     tab_tour[num_var]=-1;
-                    printf("reinit de %d\n",num_var);
-
+                        }
+                    }
 
 
 
@@ -356,10 +336,8 @@ int backjumping_h(CSP * csp)
             }
 
 
-                printf("der : %d\n",der);
-                num_var = contrainte_enfreinte;
 
-
+            num_var = contrainte_enfreinte;
 
 
 
