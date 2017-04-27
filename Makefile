@@ -26,7 +26,7 @@ backjumping.o: backjumping.c backjumping.h
 	$(CC) -o backjumping.o -c backjumping.c $(CFLAGS) $(OPTS)
 	
 backjumping-mc.o: backjumping-mc.c backjumping.h
-	$(CC) -o backjumping-mc.o -c backjumping.c $(CFLAGS) $(OPTS)
+	$(CC) -o backjumping-mc.o -c backjumping-mc.c $(CFLAGS) $(OPTS)
 	
 pile.o: pile.c pile.h
 	$(CC) -o pile.o -c pile.c $(CFLAGS)
