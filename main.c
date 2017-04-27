@@ -4,6 +4,7 @@
 #include "backtrack.h"
 #include "forward-checking-md.h"
 #include "backjumping.h"
+#include "backjumping-mc.h"
 #include "csp_output.h"
 #include <time.h>
 
@@ -17,7 +18,8 @@ int main()
     generate_dames(8, &csp);
 
     debut = clock();
-    r = backjumping(&csp);
+    r = backjumping_mc(&csp);
+    //r = forward_checking(&csp);
     fin = clock();
     printf("Backjump termine en %f sec\n", (float) (fin - debut) / CLOCKS_PER_SEC);
     
